@@ -1,6 +1,7 @@
 '''
-Stream newline-delimited JSON of objects in the form of:
+Stream newline-delimited JSON of objects of Tweets containing links.
 
+Structure:
 {"tweet_id": <str>, "user_id": <str>, "links": [list of url strings]}
 
 Data obtained from real-time Twitter API stream sample.
@@ -44,6 +45,6 @@ def twitter_links(**kwargs):
             'links': sorted(links),
         }
 
-# Start at main if executed at a program
+# Start at main if executed as a program
 if __name__ == '__main__':
     main()
