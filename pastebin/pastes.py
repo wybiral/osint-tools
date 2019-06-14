@@ -32,15 +32,22 @@ def paste_stream():
         r = requests.get(url)
         s = BeautifulSoup(r.content, 'html.parser')
         table = s.find('table', {'class': 'maintable'})
-        for a in table.find_all('a'):
+        trs = table.find_all('tr')
+        # Skip header row
+        trs = trs[1:]
+        for tr in trs:
+            tds = tr.find_all('td')
+            a = tds[0].find('a')
             paste_id = a['href'][1:]
-            if paste_id.startswith('archive/'):
-                # Ignore language archive links
-                continue
             if paste_id in cache:
                 # Ignore recently seen
                 continue
-            yield {'id': paste_id, 'title': a.string}
+            obj = {'id': paste_id, 'title': a.string}
+            syntax = tds[2].string
+            if syntax != '-':
+                # Check for syntax
+                obj['syntax'] = syntax
+            yield obj
             cache.append(paste_id)
             if len(cache) > MAX_CACHE:
                 cache = cache[-MAX_CACHE:]
